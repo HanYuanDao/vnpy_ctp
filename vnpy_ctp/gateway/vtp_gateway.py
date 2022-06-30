@@ -149,7 +149,7 @@ class VtpGateway(BaseGateway):
         "经纪商代码": "",
         "交易服务器": "",
         "行情服务器地址": "",
-        "行情服务器端口": "",
+        "行情服务器端口": 0,
         "产品名称": "",
         "授权编码": ""
     }
@@ -170,7 +170,7 @@ class VtpGateway(BaseGateway):
         brokerid: str = setting["经纪商代码"]
         td_address: str = setting["交易服务器"]
         md_address: str = setting["行情服务器地址"]
-        md_port: str = setting["行情服务器端口"]
+        md_port: int = setting["行情服务器端口"]
         appid: str = setting["产品名称"]
         auth_code: str = setting["授权编码"]
 
@@ -264,7 +264,7 @@ class VtpMdApi():
         self.address: str = ""
         self.port: int = 0
 
-        self.socket: socket.socket = None
+        self.socket_client: socket.socket = None
         self.conn: socket.socket = None
 
         self.msg_size = 1024
@@ -378,19 +378,16 @@ class VtpMdApi():
             self.subscribeMarketData(req.symbol)
         self.subscribed.add(req.symbol)
 
-    def connect(self, address: str, port: str) -> None:
+    def connect(self, address: str, port: int) -> None:
         """连接服务器"""
         self.address = address
         self.port = port
 
         # 禁止重复发起连接，会导致异常崩溃
         if not self.connect_status:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
+            self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
             # c = s.connect(address, port)
-            self.socket.bind(address, port)
-            self.socket.listen(1)
-
-            self.conn, addr = self.socket.accept()
+            self.socket_client.connect((self.address, self.port))
 
             self.connect_status = True
 
@@ -419,7 +416,7 @@ class VtpMdApi():
         data_buffer = bytes()
 
         while True:
-            data = self.conn.recv(self.msg_size)
+            data = self.socket_client.recv(self.msg_size)
             if data:
                 data_buffer += data
                 while True:
