@@ -1,1 +1,1 @@
-from .ctp_gateway import CtpGateway
+from .ctp_gateway import CtpGateway, VtpGateway

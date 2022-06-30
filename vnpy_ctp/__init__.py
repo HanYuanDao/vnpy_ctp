@@ -23,7 +23,7 @@
 
 import importlib_metadata
 
-from .gateway import CtpGateway
+from .gateway import CtpGateway, VtpGateway
 
 
 try:
