@@ -390,6 +390,8 @@ class VtpMdApi():
             self.socket_client.connect((self.address, self.port))
 
             self.connect_status = True
+            self.login_status = True
+            self.gateway.write_log("行情服务器登录成功")
 
             t = threading.Thread(target=self.receive)
             t.start()
