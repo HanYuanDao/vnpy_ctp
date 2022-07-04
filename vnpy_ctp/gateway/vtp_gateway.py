@@ -5,6 +5,7 @@ from datetime import datetime
 from time import sleep
 from typing import Dict, List, Set, Tuple
 from pathlib import Path
+import re
 
 from vnpy.event import EventEngine
 from vnpy.trader.constant import (
@@ -379,7 +380,8 @@ class VtpMdApi():
 
     def parse_tick(self, msg_body: bytes) -> None:
         trading_day = str(msg_body[8:17], encoding="ISO-8859-1")
-        instrument_id = str(msg_body[17:48], encoding="ISO-8859-1").strip()
+        instrument_id = str(msg_body[17:48], encoding="ISO-8859-1")
+        re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "", instrument_id)
         exchange_id = str(msg_body[48:57], encoding="ISO-8859-1")
         exchange_inst_id = str(msg_body[57:88])
         last_price = struct.unpack('<d', msg_body[88:96])
