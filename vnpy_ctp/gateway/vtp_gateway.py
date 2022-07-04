@@ -379,7 +379,7 @@ class VtpMdApi():
 
     def parse_tick(self, msg_body: bytes) -> None:
         trading_day = str(msg_body[8:17], encoding="ISO-8859-1")
-        instrument_id = str(msg_body[17:48], encoding="ISO-8859-1")
+        instrument_id = str(msg_body[17:48], encoding="ISO-8859-1").strip()
         exchange_id = str(msg_body[48:57], encoding="ISO-8859-1")
         exchange_inst_id = str(msg_body[57:88])
         last_price = struct.unpack('<d', msg_body[88:96])
@@ -421,7 +421,7 @@ class VtpMdApi():
         ask_price_5 = struct.unpack('<d', msg_body[376:384])
         ask_volume_5 = struct.unpack('<l', msg_body[384:388])
         average_price = struct.unpack('<d', msg_body[392:400])
-        action_day = str(msg_body[400:409])
+        action_day = str(msg_body[400:409], encoding="ISO-8859-1")
 
         """行情数据推送"""
         # 过滤没有时间戳的异常行情数据
