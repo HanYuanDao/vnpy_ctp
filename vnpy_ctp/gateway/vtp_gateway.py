@@ -379,9 +379,10 @@ class VtpMdApi():
         VtpMdApi.parse_data[cmd_id](self, msg_body)
 
     def parse_tick(self, msg_body: bytes) -> None:
-        trading_day = str(msg_body[8:17], encoding="ISO-8859-1")
-        instrument_id = str(msg_body[17:48], encoding="ISO-8859-1")
-        re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "", instrument_id)
+        trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                               str(msg_body[8:17], encoding="ISO-8859-1"))
+        instrument_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                               str(msg_body[17:48], encoding="ISO-8859-1"))
         exchange_id = str(msg_body[48:57], encoding="ISO-8859-1")
         exchange_inst_id = str(msg_body[57:88])
         last_price = struct.unpack('<d', msg_body[88:96])
@@ -401,7 +402,7 @@ class VtpMdApi():
         pre_delta = struct.unpack('<d', msg_body[200:208])
         curr_delta = struct.unpack('<d', msg_body[208:216])
         update_time = str(msg_body[216:225], encoding="ISO-8859-1")
-        update_millisec = struct.unpack('<l', msg_body[228:232])
+        update_millisec = struct.unpack('<l', msg_body[228:232])[0]
         bid_price_1 = struct.unpack('<d', msg_body[232:240])
         bid_volume_1 = struct.unpack('<l', msg_body[240:244])
         bid_price_2 = struct.unpack('<d', msg_body[248:256])
@@ -442,7 +443,7 @@ class VtpMdApi():
         else:
             date_str: str = action_day
 
-        timestamp: str = f"{date_str} {update_time}.{int(update_millisec / 100)}"
+        timestamp: str = f"{date_str} {update_time}.{int(update_millisec/100)}"
         dt: datetime = datetime.strptime(timestamp, "%Y%m%d %H:%M:%S.%f")
         dt: datetime = CHINA_TZ.localize(dt)
 
