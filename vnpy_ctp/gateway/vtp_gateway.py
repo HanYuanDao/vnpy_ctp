@@ -383,8 +383,10 @@ class VtpMdApi():
                                str(msg_body[8:17], encoding="ISO-8859-1"))
         instrument_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
                                str(msg_body[17:48], encoding="ISO-8859-1"))
-        exchange_id = str(msg_body[48:57], encoding="ISO-8859-1")
-        exchange_inst_id = str(msg_body[57:88])
+        exchange_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                             str(msg_body[48:57], encoding="ISO-8859-1"))
+        exchange_inst_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                                  str(msg_body[57:88]))
         last_price = struct.unpack('<d', msg_body[88:96])
         pre_settlement_price = struct.unpack('<d', msg_body[96:104])
         pre_close_price = struct.unpack('<d', msg_body[104:112])
@@ -401,7 +403,8 @@ class VtpMdApi():
         lower_limit_price = struct.unpack('<d', msg_body[192:200])
         pre_delta = struct.unpack('<d', msg_body[200:208])
         curr_delta = struct.unpack('<d', msg_body[208:216])
-        update_time = str(msg_body[216:225], encoding="ISO-8859-1")
+        update_time = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                             str(msg_body[216:225], encoding="ISO-8859-1"))
         update_millisec = struct.unpack('<l', msg_body[228:232])[0]
         bid_price_1 = struct.unpack('<d', msg_body[232:240])
         bid_volume_1 = struct.unpack('<l', msg_body[240:244])
@@ -424,7 +427,8 @@ class VtpMdApi():
         ask_price_5 = struct.unpack('<d', msg_body[376:384])
         ask_volume_5 = struct.unpack('<l', msg_body[384:388])
         average_price = struct.unpack('<d', msg_body[392:400])
-        action_day = str(msg_body[400:409], encoding="ISO-8859-1")
+        action_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u0039\u0041-\u005a\u0061-\u007a])", "",
+                            str(msg_body[400:409], encoding="ISO-8859-1"))
 
         """行情数据推送"""
         # 过滤没有时间戳的异常行情数据
@@ -443,7 +447,7 @@ class VtpMdApi():
         else:
             date_str: str = action_day
 
-        timestamp: str = f"{date_str} {update_time}.{int(update_millisec/100)}"
+        timestamp: str = f"{date_str} {update_time}.{update_millisec}"
         dt: datetime = datetime.strptime(timestamp, "%Y%m%d %H:%M:%S.%f")
         dt: datetime = CHINA_TZ.localize(dt)
 
