@@ -270,7 +270,6 @@ class VtpMdApi():
         self.msg_size = 1024
         self.msg_head_size = 8
 
-
         self.current_date: str = datetime.now().strftime("%Y%m%d")
 
     def onFrontConnected(self) -> None:
@@ -351,29 +350,37 @@ class VtpMdApi():
         data_buffer = bytes()
 
         while True:
-            data = self.socket_client.recv(self.msg_size)
-            if data:
-                data_buffer += data
-                while True:
-                    if len(data_buffer) < self.msg_head_size:
-                        break
+            try :
+                data = self.socket_client.recv(self.msg_size)
+                if data:
+                    data_buffer += data
+                    while True:
+                        if len(data_buffer) < self.msg_head_size:
+                            break
 
-                    head_pack = struct.unpack('<2l', data_buffer[:self.msg_head_size])
-                    body_size = head_pack[0]
-                    cmd_id = head_pack[1]
+                        head_pack = struct.unpack('<2l', data_buffer[:self.msg_head_size])
+                        body_size = head_pack[0]
+                        cmd_id = head_pack[1]
 
-                    # buffer区长度少于消息体长度则退出
-                    if len(data_buffer) < self.msg_head_size + body_size:
-                        break
+                        # buffer区长度少于消息体长度则退出
+                        if len(data_buffer) < self.msg_head_size + body_size:
+                            break
 
-                    # 根据消息长度获取到完整的消息
-                    body = data_buffer[0:self.msg_head_size + body_size]
+                        # 根据消息长度获取到完整的消息
+                        body = data_buffer[0:self.msg_head_size + body_size]
 
-                    # 数据处理
-                    self.parse(cmd_id, body)
+                        # 数据处理
+                        self.parse(cmd_id, body)
 
-                    # 将已处理掉的数据清除出buffer区
-                    data_buffer = data_buffer[self.msg_head_size + body_size:]
+                        # 将已处理掉的数据清除出buffer区
+                        data_buffer = data_buffer[self.msg_head_size + body_size:]
+            except:
+                self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
+                # c = s.connect(address, port)
+                self.socket_client.connect((self.address, self.port))
+
+                for symbol in self.subscribed:
+                    self.subscribeMarketData(symbol)
 
     def parse(self, cmd_id: int, msg_body):
         VtpMdApi.parse_data[cmd_id](self, msg_body)
@@ -494,7 +501,6 @@ class VtpMdApi():
         tick.ask_volume_5 = ask_volume_5
 
         self.gateway.on_tick(tick)
-
 
     def parse_cipher_tick(self, msg_body: bytes):
         pass
