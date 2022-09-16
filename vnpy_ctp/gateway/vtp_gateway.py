@@ -504,13 +504,128 @@ class VtpMdApi():
 
     def parse_cipher_tick(self, msg_body: bytes):
         # 解析获取加密字符
-        byte_key = msg_body[0]
+        byte_key = msg_body[8]
 
         parse_tick = bytes()
-        for index in range(1, 298):
+        for index in range(9, 306):
             parse_tick += bytes(msg_body[index] ^ byte_key)
 
-        self.parse_tick(parse_tick)
+        instrument_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                               str(parse_tick[0:31], encoding="ISO-8859-1"))
+        volume = struct.unpack('<l', msg_body[31:39])[0]
+        trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                             str(msg_body[8:17], encoding="ISO-8859-1"))
+        exchange_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                             str(msg_body[48:57], encoding="ISO-8859-1"))
+        exchange_inst_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                                  str(msg_body[57:88]))
+        last_price = struct.unpack('<d', msg_body[88:96])[0]
+        pre_settlement_price = struct.unpack('<d', msg_body[96:104])[0]
+        pre_close_price = struct.unpack('<d', msg_body[104:112])[0]
+        pre_open_interest = struct.unpack('<d', msg_body[112:120])[0]
+        open_price = struct.unpack('<d', msg_body[120:128])[0]
+        highest_price = struct.unpack('<d', msg_body[128:136])[0]
+        lowest_price = struct.unpack('<d', msg_body[136:144])[0]
+
+        turnover = struct.unpack('<d', msg_body[152:160])[0]
+        open_interest = struct.unpack('<d', msg_body[160:168])[0]
+        close_price = struct.unpack('<d', msg_body[168:176])[0]
+        settlement_price = struct.unpack('<d', msg_body[176:184])[0]
+        upper_limit_price = struct.unpack('<d', msg_body[184:192])[0]
+        lower_limit_price = struct.unpack('<d', msg_body[192:200])[0]
+        pre_delta = struct.unpack('<d', msg_body[200:208])[0]
+        curr_delta = struct.unpack('<d', msg_body[208:216])[0]
+        update_time = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                             str(msg_body[216:225], encoding="ISO-8859-1"))
+        update_millisec = struct.unpack('<l', msg_body[228:232])[0]
+        bid_price_1 = struct.unpack('<d', msg_body[232:240])[0]
+        bid_volume_1 = struct.unpack('<l', msg_body[240:244])[0]
+        ask_price_1 = struct.unpack('<d', msg_body[248:256])[0]
+        ask_volume_1 = struct.unpack('<l', msg_body[256:260])[0]
+        bid_price_2 = struct.unpack('<d', msg_body[264:272])[0]
+        bid_volume_2 = struct.unpack('<l', msg_body[272:276])[0]
+        ask_price_2 = struct.unpack('<d', msg_body[280:288])[0]
+        ask_volume_2 = struct.unpack('<l', msg_body[288:292])[0]
+        bid_price_3 = struct.unpack('<d', msg_body[296:304])[0]
+        bid_volume_3 = struct.unpack('<l', msg_body[304:308])[0]
+        ask_price_3 = struct.unpack('<d', msg_body[312:320])[0]
+        ask_volume_3 = struct.unpack('<l', msg_body[320:324])[0]
+        bid_price_4 = struct.unpack('<d', msg_body[328:336])[0]
+        bid_volume_4 = struct.unpack('<l', msg_body[336:340])[0]
+        ask_price_4 = struct.unpack('<d', msg_body[344:352])[0]
+        ask_volume_4 = struct.unpack('<l', msg_body[352:356])[0]
+        bid_price_5 = struct.unpack('<d', msg_body[360:368])[0]
+        bid_volume_5 = struct.unpack('<l', msg_body[368:372])[0]
+        ask_price_5 = struct.unpack('<d', msg_body[376:384])[0]
+        ask_volume_5 = struct.unpack('<l', msg_body[384:388])[0]
+        average_price = struct.unpack('<d', msg_body[392:400])[0]
+        action_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                            str(msg_body[400:409], encoding="ISO-8859-1"))
+
+        """行情数据推送"""
+        # 过滤没有时间戳的异常行情数据
+        if not update_time:
+            return
+
+        # 过滤还没有收到合约数据前的行情推送
+        symbol: str = instrument_id
+        contract: ContractData = symbol_contract_map.get(symbol, None)
+        if not contract:
+            return
+
+        # 对大商所的交易日字段取本地日期
+        if contract.exchange == Exchange.DCE:
+            date_str: str = self.current_date
+        else:
+            date_str: str = action_day
+
+        timestamp: str = f"{date_str} {update_time}.{update_millisec}"
+        dt: datetime = datetime.strptime(timestamp, "%Y%m%d %H:%M:%S.%f")
+        dt: datetime = CHINA_TZ.localize(dt)
+
+        tick: TickData = TickData(
+            symbol=symbol,
+            exchange=contract.exchange,
+            datetime=dt,
+            name=contract.name,
+            volume=volume,
+            turnover=turnover,
+            open_interest=open_interest,
+            last_price=adjust_price(last_price),
+            limit_up=upper_limit_price,
+            limit_down=lower_limit_price,
+            open_price=adjust_price(open_price),
+            high_price=adjust_price(highest_price),
+            low_price=adjust_price(lowest_price),
+            pre_close=adjust_price(pre_close_price),
+            bid_price_1=adjust_price(bid_price_1),
+            ask_price_1=adjust_price(ask_price_1),
+            bid_volume_1=bid_volume_1,
+            ask_volume_1=ask_volume_1,
+            gateway_name=self.gateway_name
+        )
+
+        tick.bid_price_2 = adjust_price(bid_price_2)
+        tick.bid_price_3 = adjust_price(bid_price_3)
+        tick.bid_price_4 = adjust_price(bid_price_4)
+        tick.bid_price_5 = adjust_price(bid_price_5)
+
+        tick.ask_price_2 = adjust_price(ask_price_2)
+        tick.ask_price_3 = adjust_price(ask_price_3)
+        tick.ask_price_4 = adjust_price(ask_price_4)
+        tick.ask_price_5 = adjust_price(ask_price_5)
+
+        tick.bid_volume_2 = bid_volume_2
+        tick.bid_volume_3 = bid_volume_3
+        tick.bid_volume_4 = bid_volume_4
+        tick.bid_volume_5 = bid_volume_5
+
+        tick.ask_volume_2 = ask_volume_2
+        tick.ask_volume_3 = ask_volume_3
+        tick.ask_volume_4 = ask_volume_4
+        tick.ask_volume_5 = ask_volume_5
+
+        self.gateway.on_tick(tick)
 
     def parse_defind(self, msg_body: bytes):
         pass
@@ -525,6 +640,7 @@ class VtpMdApi():
         CMD_REQ_UNSUB: parse_defind,
         CMD_RSP_UNSUB: parse_defind,
     }
+
 
 class CtpTdApi(TdApi):
     """"""
