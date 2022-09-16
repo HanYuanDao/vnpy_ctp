@@ -503,7 +503,13 @@ class VtpMdApi():
         self.gateway.on_tick(tick)
 
     def parse_cipher_tick(self, msg_body: bytes):
-        pass
+        byte_key = bytes[0]
+
+        parse_tick = byte_key[1:298]
+        for index in range(len(parse_tick)):
+            parse_tick[index] ^= byte_key
+
+        self.parse_tick(parse_tick)
 
     def parse_defind(self, msg_body: bytes):
         pass
