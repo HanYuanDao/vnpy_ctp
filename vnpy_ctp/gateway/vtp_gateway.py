@@ -310,6 +310,25 @@ class VtpMdApi():
             self.subscribeMarketData(req.symbol)
         self.subscribed.add(req.symbol)
 
+    def doConnect(self) -> None:
+        try:
+            self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
+            # c = s.connect(address, port)
+            self.socket_client.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, True)
+            self.socket_client.ioctl(socket.SIO_KEEPALIVE_VALS,
+                                     (1,
+                                      5 * 1000,
+                                      3 * 1000)
+                                     )
+            self.socket_client.connect((self.address, self.port))
+
+            for symbol in self.subscribed:
+                self.subscribeMarketData(symbol)
+        except:
+            self.gateway.write_log("行情服务器连接时异常")
+            sleep(5)
+            self.doConnect()
+
     def connect(self, address: str, port: int) -> None:
         """连接服务器"""
         self.address = address
@@ -317,9 +336,7 @@ class VtpMdApi():
 
         # 禁止重复发起连接，会导致异常崩溃
         if not self.connect_status:
-            self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-            # c = s.connect(address, port)
-            self.socket_client.connect((self.address, self.port))
+            self.doConnect()
 
             self.connect_status = True
             self.login_status = True
@@ -330,6 +347,7 @@ class VtpMdApi():
 
     def close(self) -> None:
         """关闭连接"""
+        self.gateway.write_log("行情服务器连接关闭")
         if self.connect_status:
             self.exit()
 
@@ -375,19 +393,15 @@ class VtpMdApi():
                         # 将已处理掉的数据清除出buffer区
                         data_buffer = data_buffer[self.msg_head_size + body_size:]
             except:
-                self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-                # c = s.connect(address, port)
-                self.socket_client.connect((self.address, self.port))
-
-                for symbol in self.subscribed:
-                    self.subscribeMarketData(symbol)
+                self.gateway.write_log("行情服务器连接出现异常")
+                self.doConnect()
 
     def parse(self, cmd_id: int, msg_body):
         VtpMdApi.parse_data[cmd_id](self, msg_body)
 
     def parse_tick(self, msg_body: bytes) -> None:
         trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                               str(msg_body[8:17], encoding="ISO-8859-1"))
+                             str(msg_body[8:17], encoding="ISO-8859-1"))
         instrument_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
                                str(msg_body[17:48], encoding="ISO-8859-1"))
         exchange_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
@@ -507,60 +521,57 @@ class VtpMdApi():
         byte_key = msg_body[8]
 
         parse_tick = bytes()
-        for index in range(9, 306):
-            parse_tick += bytes(msg_body[index] ^ byte_key)
+        for index in range(9, 9+298):
+            parse_tick += bytes([msg_body[index] ^ byte_key])
 
         instrument_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
                                str(parse_tick[0:31], encoding="ISO-8859-1"))
-        volume = struct.unpack('<l', msg_body[31:39])[0]
-        trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                             str(msg_body[8:17], encoding="ISO-8859-1"))
-        exchange_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                             str(msg_body[48:57], encoding="ISO-8859-1"))
-        exchange_inst_id = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                                  str(msg_body[57:88]))
-        last_price = struct.unpack('<d', msg_body[88:96])[0]
-        pre_settlement_price = struct.unpack('<d', msg_body[96:104])[0]
-        pre_close_price = struct.unpack('<d', msg_body[104:112])[0]
-        pre_open_interest = struct.unpack('<d', msg_body[112:120])[0]
-        open_price = struct.unpack('<d', msg_body[120:128])[0]
-        highest_price = struct.unpack('<d', msg_body[128:136])[0]
-        lowest_price = struct.unpack('<d', msg_body[136:144])[0]
+        last_price = struct.unpack('<d', parse_tick[31:39])[0]
+        volume = struct.unpack('<l', parse_tick[39:43])[0]
+        bid_price_1 = struct.unpack('<d', parse_tick[43:51])[0]
+        bid_price_2 = struct.unpack('<d', parse_tick[51:59])[0]
+        bid_price_3 = struct.unpack('<d', parse_tick[59:67])[0]
+        bid_price_4 = struct.unpack('<d', parse_tick[67:75])[0]
+        bid_price_5 = struct.unpack('<d', parse_tick[75:83])[0]
+        bid_volume_1 = struct.unpack('<l', parse_tick[83:87])[0]
+        bid_volume_2 = struct.unpack('<l', parse_tick[87:91])[0]
+        bid_volume_3 = struct.unpack('<l', parse_tick[91:95])[0]
+        bid_volume_4 = struct.unpack('<l', parse_tick[95:99])[0]
+        bid_volume_5 = struct.unpack('<l', parse_tick[99:103])[0]
+        ask_price_1 = struct.unpack('<d', parse_tick[103:111])[0]
+        ask_price_2 = struct.unpack('<d', parse_tick[111:119])[0]
+        ask_price_3 = struct.unpack('<d', parse_tick[119:127])[0]
+        ask_price_4 = struct.unpack('<d', parse_tick[127:135])[0]
+        ask_price_5 = struct.unpack('<d', parse_tick[135:143])[0]
+        ask_volume_1 = struct.unpack('<l', parse_tick[143:147])[0]
+        ask_volume_2 = struct.unpack('<l', parse_tick[147:151])[0]
+        ask_volume_3 = struct.unpack('<l', parse_tick[151:155])[0]
+        ask_volume_4 = struct.unpack('<l', parse_tick[155:159])[0]
+        ask_volume_5 = struct.unpack('<l', parse_tick[159:163])[0]
 
-        turnover = struct.unpack('<d', msg_body[152:160])[0]
-        open_interest = struct.unpack('<d', msg_body[160:168])[0]
-        close_price = struct.unpack('<d', msg_body[168:176])[0]
-        settlement_price = struct.unpack('<d', msg_body[176:184])[0]
-        upper_limit_price = struct.unpack('<d', msg_body[184:192])[0]
-        lower_limit_price = struct.unpack('<d', msg_body[192:200])[0]
-        pre_delta = struct.unpack('<d', msg_body[200:208])[0]
-        curr_delta = struct.unpack('<d', msg_body[208:216])[0]
+        highest_price = struct.unpack('<d', parse_tick[163:171])[0]
+        lowest_price = struct.unpack('<d', parse_tick[171:179])[0]
+
+        upper_limit_price = struct.unpack('<d', parse_tick[179:187])[0]
+        lower_limit_price = struct.unpack('<d', parse_tick[187:195])[0]
+
+        pre_settlement_price = struct.unpack('<d', parse_tick[195:203])[0]
+        pre_close_price = struct.unpack('<d', parse_tick[203:211])[0]
+        pre_open_interest = struct.unpack('<d', parse_tick[211:219])[0]
+
+        pre_delta = struct.unpack('<d', parse_tick[219:227])[0]
+        curr_delta = struct.unpack('<d', parse_tick[227:235])[0]
+
+        open_price = struct.unpack('<d', parse_tick[235:243])[0]
+        close_price = struct.unpack('<d', parse_tick[243:251])[0]
+        settlement_price = struct.unpack('<d', parse_tick[251:259])[0]
+        turnover = struct.unpack('<d', parse_tick[259:267])[0]
+        open_interest = struct.unpack('<d', parse_tick[267:275])[0]
+        trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
+                             str(parse_tick[275:284], encoding="ISO-8859-1"))
         update_time = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                             str(msg_body[216:225], encoding="ISO-8859-1"))
-        update_millisec = struct.unpack('<l', msg_body[228:232])[0]
-        bid_price_1 = struct.unpack('<d', msg_body[232:240])[0]
-        bid_volume_1 = struct.unpack('<l', msg_body[240:244])[0]
-        ask_price_1 = struct.unpack('<d', msg_body[248:256])[0]
-        ask_volume_1 = struct.unpack('<l', msg_body[256:260])[0]
-        bid_price_2 = struct.unpack('<d', msg_body[264:272])[0]
-        bid_volume_2 = struct.unpack('<l', msg_body[272:276])[0]
-        ask_price_2 = struct.unpack('<d', msg_body[280:288])[0]
-        ask_volume_2 = struct.unpack('<l', msg_body[288:292])[0]
-        bid_price_3 = struct.unpack('<d', msg_body[296:304])[0]
-        bid_volume_3 = struct.unpack('<l', msg_body[304:308])[0]
-        ask_price_3 = struct.unpack('<d', msg_body[312:320])[0]
-        ask_volume_3 = struct.unpack('<l', msg_body[320:324])[0]
-        bid_price_4 = struct.unpack('<d', msg_body[328:336])[0]
-        bid_volume_4 = struct.unpack('<l', msg_body[336:340])[0]
-        ask_price_4 = struct.unpack('<d', msg_body[344:352])[0]
-        ask_volume_4 = struct.unpack('<l', msg_body[352:356])[0]
-        bid_price_5 = struct.unpack('<d', msg_body[360:368])[0]
-        bid_volume_5 = struct.unpack('<l', msg_body[368:372])[0]
-        ask_price_5 = struct.unpack('<d', msg_body[376:384])[0]
-        ask_volume_5 = struct.unpack('<l', msg_body[384:388])[0]
-        average_price = struct.unpack('<d', msg_body[392:400])[0]
-        action_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
-                            str(msg_body[400:409], encoding="ISO-8859-1"))
+                             str(parse_tick[284:293], encoding="ISO-8859-1"))
+        update_millisec = struct.unpack('<l', parse_tick[293:297])[0]
 
         """行情数据推送"""
         # 过滤没有时间戳的异常行情数据
@@ -577,7 +588,7 @@ class VtpMdApi():
         if contract.exchange == Exchange.DCE:
             date_str: str = self.current_date
         else:
-            date_str: str = action_day
+            date_str: str = trading_day
 
         timestamp: str = f"{date_str} {update_time}.{update_millisec}"
         dt: datetime = datetime.strptime(timestamp, "%Y%m%d %H:%M:%S.%f")
@@ -1106,3 +1117,4 @@ def adjust_price(price: float) -> float:
     if price == MAX_FLOAT:
         price = 0
     return price
+
