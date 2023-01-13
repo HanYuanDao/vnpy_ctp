@@ -114,7 +114,8 @@ EXCHANGE_CTP2VT: Dict[str, Exchange] = {
     "SHFE": Exchange.SHFE,
     "CZCE": Exchange.CZCE,
     "DCE": Exchange.DCE,
-    "INE": Exchange.INE
+    "INE": Exchange.INE,
+    "GFEX": Exchange.CZCE,
 }
 
 # 产品类型映射
@@ -613,6 +614,8 @@ class VtpMdApi():
             ask_price_1=adjust_price(ask_price_1),
             bid_volume_1=bid_volume_1,
             ask_volume_1=ask_volume_1,
+            actionDay="",
+            tradDay="",
             gateway_name=self.gateway_name
         )
 
