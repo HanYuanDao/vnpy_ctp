@@ -111,7 +111,8 @@ EXCHANGE_CTP2VT: Dict[str, Exchange] = {
     "SHFE": Exchange.SHFE,
     "CZCE": Exchange.CZCE,
     "DCE": Exchange.DCE,
-    "INE": Exchange.INE
+    "INE": Exchange.INE,
+    "GFEX": Exchange.GFEX,
 }
 
 # 产品类型映射
@@ -263,7 +264,7 @@ class CtpMdApi(MdApi):
 
     def onFrontConnected(self) -> None:
         """服务器连接成功回报"""
-        self.gateway.write_log("行情服务器连接成功")
+        self.gateway.write_log("CTP行情服务器连接成功")
         self.login()
 
     def onFrontDisconnected(self, reason: int) -> None:
@@ -334,6 +335,8 @@ class CtpMdApi(MdApi):
             ask_price_1=adjust_price(data["AskPrice1"]),
             bid_volume_1=data["BidVolume1"],
             ask_volume_1=data["AskVolume1"],
+            actionDay="",
+            tradDay="",
             gateway_name=self.gateway_name
         )
 

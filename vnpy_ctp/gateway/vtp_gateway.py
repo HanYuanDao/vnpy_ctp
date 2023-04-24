@@ -1,5 +1,6 @@
 import struct
 import sys
+import traceback
 import pytz
 from datetime import datetime
 from time import sleep
@@ -398,7 +399,10 @@ class VtpMdApi():
                 self.doConnect()
 
     def parse(self, cmd_id: int, msg_body):
-        VtpMdApi.parse_data[cmd_id](self, msg_body)
+        try:
+            VtpMdApi.parse_data[cmd_id](self, msg_body)
+        except Exception:
+            self.output(traceback.format_exc())
 
     def parse_tick(self, msg_body: bytes) -> None:
         trading_day = re.sub(u"([^\u4e00-\u9fa5\u0030-\u005a\u0061-\u007a])", "",
@@ -492,6 +496,8 @@ class VtpMdApi():
             ask_price_1=adjust_price(ask_price_1),
             bid_volume_1=bid_volume_1,
             ask_volume_1=ask_volume_1,
+            actionDay="",
+            tradDay="",
             gateway_name=self.gateway_name
         )
 
