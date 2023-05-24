@@ -864,6 +864,8 @@ class CtpTdApi(TdApi):
                 product=product,
                 size=data["VolumeMultiple"],
                 pricetick=data["PriceTick"],
+                long_margin_ratio=data["LongMarginRatio"],
+                short_margin_ratio=data["ShortMarginRatio"],
                 gateway_name=self.gateway_name
             )
 
