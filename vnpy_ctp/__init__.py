@@ -23,10 +23,10 @@
 
 from importlib import metadata
 
-from .gateway import CtpGateway
+from .gateway import CtpGateway, VtpGateway
 
 
-__all__ = ["CtpGateway"]
+__all__ = ["CtpGateway", "VtpGateway"]
 
 
 try:
