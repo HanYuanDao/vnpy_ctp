@@ -170,6 +170,7 @@ python_files = [
   ['vnpy_ctp/api/ctp_constant.py', 'vnpy_ctp/api'],
   ['vnpy_ctp/gateway/__init__.py', 'vnpy_ctp/gateway'],
   ['vnpy_ctp/gateway/ctp_gateway.py', 'vnpy_ctp/gateway'],
+  ['vnpy_ctp/gateway/vtp_gateway.py', 'vnpy_ctp/gateway'],
 ]
 
 foreach file : python_files
