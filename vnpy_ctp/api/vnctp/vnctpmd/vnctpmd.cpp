@@ -1,11 +1,11 @@
-// vnctpmd.cpp : ∂®“Â DLL ”¶”√≥Ã–Úµƒµº≥ˆ∫Ø ˝°£
+// vnctpmd.cpp : ÂÆö‰πâ DLL Â∫îÁî®Á®ãÂ∫èÁöÑÂØºÂá∫ÂáΩÊï∞„ÄÇ
 //
 
 #include "vnctpmd.h"
 
 
 ///-------------------------------------------------------------------------------------
-///C++µƒªÿµ˜∫Ø ˝Ω´ ˝æ›±£¥ÊµΩ∂”¡–÷–
+///C++ÁöÑÂõûË∞ÉÂáΩÊï∞Â∞ÜÊï∞ÊçÆ‰øùÂ≠òÂà∞ÈòüÂàó‰∏≠
 ///-------------------------------------------------------------------------------------
 
 void MdApi::OnFrontConnected()
@@ -220,7 +220,7 @@ void MdApi::OnRtnForQuoteRsp(CThostFtdcForQuoteRspField *pForQuoteRsp)
 };
 
 ///-------------------------------------------------------------------------------------
-///π§◊˜œﬂ≥Ã¥”∂”¡–÷–»°≥ˆ ˝æ›£¨◊™ªØŒ™python∂‘œÛ∫Û£¨Ω¯––Õ∆ÀÕ
+///Â∑•‰ΩúÁ∫øÁ®ã‰ªéÈòüÂàó‰∏≠ÂèñÂá∫Êï∞ÊçÆÔºåËΩ¨Âåñ‰∏∫pythonÂØπË±°ÂêéÔºåËøõË°åÊé®ÈÄÅ
 ///-------------------------------------------------------------------------------------
 
 void MdApi::processTask()
@@ -358,6 +358,10 @@ void MdApi::processRspUserLogin(Task *task)
 		data["INETime"] = toUtf(task_data->INETime);
 		data["SysVersion"] = toUtf(task_data->SysVersion);
 		data["GFEXTime"] = toUtf(task_data->GFEXTime);
+		data["LoginDRIdentityID"] = task_data->LoginDRIdentityID;
+		data["UserDRIdentityID"] = task_data->UserDRIdentityID;
+		data["LastLoginTime"] = toUtf(task_data->LastLoginTime);
+		data["ReserveInfo"] = toUtf(task_data->ReserveInfo);
 		delete task_data;
 	}
 	dict error;
@@ -602,12 +606,12 @@ void MdApi::processRtnForQuoteRsp(Task *task)
 };
 
 ///-------------------------------------------------------------------------------------
-///÷˜∂Ø∫Ø ˝
+///‰∏ªÂä®ÂáΩÊï∞
 ///-------------------------------------------------------------------------------------
 
-void MdApi::createFtdcMdApi(string pszFlowPath)
+void MdApi::createFtdcMdApi(string pszFlowPath, bool bIsProductionMode)
 {
-	this->api = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath.c_str());
+	this->api = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath.c_str(), false, false, bIsProductionMode);
 	this->api->RegisterSpi(this);
 };
 
@@ -749,7 +753,7 @@ int MdApi::reqQryMulticastInstrument(const dict &req, int reqid)
 };
 
 ///-------------------------------------------------------------------------------------
-///pybind11∑‚◊∞
+///pybind11Â∞ÅË£Ö
 ///-------------------------------------------------------------------------------------
 
 class PyMdApi: public MdApi
