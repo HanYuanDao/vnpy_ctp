@@ -1030,7 +1030,7 @@ public:
 
 	void processRspCancelOffsetSetting(Task* task);
 
-	void processRtnOffsetSetting(Task* task);
+//	void processRtnOffsetSetting(Task* task);
 
 	void processErrRtnOffsetSetting(Task* task);
 

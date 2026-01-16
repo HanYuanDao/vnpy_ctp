@@ -10573,7 +10573,7 @@ void TdApi::processRspCancelOffsetSetting(Task* task)
 	this->onRspCancelOffsetSetting(data, error, task->task_id, task->task_last);
 };
 
-void TdApi::processRtnOffsetSetting(Task* task)
+/*void TdApi::processRtnOffsetSetting(Task* task)
 {
 	gil_scoped_acquire acquire;
 	dict data;
@@ -10617,7 +10617,7 @@ void TdApi::processRtnOffsetSetting(Task* task)
 		delete task_data;
 	}
 	this->onRtnOffsetSetting(data);
-};
+};*/
 
 void TdApi::processErrRtnOffsetSetting(Task* task)
 {
