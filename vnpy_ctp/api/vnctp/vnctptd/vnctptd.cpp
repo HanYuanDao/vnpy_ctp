@@ -2998,7 +2998,7 @@ void TdApi::OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingField *pI
 	this->task_queue.push(task);
 };
 
-void TdApi::OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInvestorInfoCommRec, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+/*void TdApi::OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInvestorInfoCommRec, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYINVESTORINFOCOMMREC;
@@ -3017,9 +3017,9 @@ void TdApi::OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInv
 	task.task_id = nRequestID;
 	task.task_last = bIsLast;
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+/*void TdApi::OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYCOMBLEG;
@@ -3038,9 +3038,9 @@ void TdApi::OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoF
 	task.task_id = nRequestID;
 	task.task_last = bIsLast;
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+/*void TdApi::OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
 	Task task = Task();
 	task.task_name = ONRSPOFFSETSETTING;
@@ -3059,9 +3059,9 @@ void TdApi::OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSe
 	task.task_id = nRequestID;
 	task.task_last = bIsLast;
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+/*void TdApi::OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
 	Task task = Task();
 	task.task_name = ONRSPCANCELOFFSETSETTING;
@@ -3080,9 +3080,9 @@ void TdApi::OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOf
 	task.task_id = nRequestID;
 	task.task_last = bIsLast;
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting)
+/*void TdApi::OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting)
 {
 	Task task = Task();
 	task.task_name = ONRTNOFFSETSETTING;
@@ -3093,9 +3093,9 @@ void TdApi::OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting)
 		task.task_data = task_data;
 	}
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+/*void TdApi::OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
 {
 	Task task = Task();
 	task.task_name = ONERRRTNOFFSETSETTING;
@@ -3112,9 +3112,9 @@ void TdApi::OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffse
 		task.task_error = task_error;
 	}
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCancelOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+/*void TdApi::OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCancelOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
 {
 	Task task = Task();
 	task.task_name = ONERRRTNCANCELOFFSETSETTING;
@@ -3131,9 +3131,9 @@ void TdApi::OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCan
 		task.task_error = task_error;
 	}
 	this->task_queue.push(task);
-};
+};*/
 
-void TdApi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+/*void TdApi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
 	Task task = Task();
 	task.task_name = ONRSPQRYOFFSETSETTING;
@@ -3152,7 +3152,7 @@ void TdApi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, 
 	task.task_id = nRequestID;
 	task.task_last = bIsLast;
 	this->task_queue.push(task);
-};
+};*/
 
 ///-------------------------------------------------------------------------------------
 ///工作线程从队列中取出数据，转化为python对象后，进行推送
