@@ -708,7 +708,7 @@ public:
     //-------------------------------------------------------------------------------------
     //task：任务
     //-------------------------------------------------------------------------------------
-    void processTask();
+/*  void processTask();
 
 	void processFrontConnected(Task *task);
 
@@ -1020,7 +1020,7 @@ public:
 
 	void processRspQryInvestorProdRULEMargin(Task *task);
 
-	void processRspQryInvestorPortfSetting(Task *task);
+	void processRspQryInvestorPortfSetting(Task *task);*/
 
 //	void processRspQryInvestorInfoCommRec(Task* task);
 

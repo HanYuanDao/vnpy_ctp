@@ -3158,7 +3158,7 @@ void TdApi::OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingField *pI
 ///工作线程从队列中取出数据，转化为python对象后，进行推送
 ///-------------------------------------------------------------------------------------
 
-void TdApi::processTask()
+/*void TdApi::processTask()
 {
     try
     {
@@ -4202,7 +4202,7 @@ void TdApi::processRspAuthenticate(Task *task)
 	this->onRspAuthenticate(data, error, task->task_id, task->task_last);
 };
 
-/*void TdApi::processRspUserLogin(Task *task)
+*//*void TdApi::processRspUserLogin(Task *task)
 {
 	gil_scoped_acquire acquire;
 	dict data;
@@ -4239,7 +4239,7 @@ void TdApi::processRspAuthenticate(Task *task)
 		delete task_error;
 	}
 	this->onRspUserLogin(data, error, task->task_id, task->task_last);
-};*/
+};*//*
 
 void TdApi::processRspUserLogout(Task *task)
 {
@@ -5165,7 +5165,7 @@ void TdApi::processRspQryTrade(Task *task)
 	this->onRspQryTrade(data, error, task->task_id, task->task_last);
 };
 
-/*void TdApi::processRspQryInvestorPosition(Task *task)
+*//*void TdApi::processRspQryInvestorPosition(Task *task)
 {
 	gil_scoped_acquire acquire;
 	dict data;
@@ -5234,7 +5234,7 @@ void TdApi::processRspQryTrade(Task *task)
 		delete task_error;
 	}
 	this->onRspQryInvestorPosition(data, error, task->task_id, task->task_last);
-};*/
+};*//*
 
 void TdApi::processRspQryTradingAccount(Task *task)
 {
@@ -10448,7 +10448,7 @@ void TdApi::processRspQryInvestorPortfSetting(Task *task)
 		delete task_error;
 	}
 	this->onRspQryInvestorPortfSetting(data, error, task->task_id, task->task_last);
-};
+};*/
 
 /*void TdApi::processRspQryInvestorInfoCommRec(Task* task)
 {
