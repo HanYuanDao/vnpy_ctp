@@ -718,7 +718,7 @@ public:
 
 	void processRspAuthenticate(Task *task);
 
-	void processRspUserLogin(Task *task);
+//	void processRspUserLogin(Task *task);
 
 	void processRspUserLogout(Task *task);
 
@@ -770,7 +770,7 @@ public:
 
 	void processRspQryTrade(Task *task);
 
-	void processRspQryInvestorPosition(Task *task);
+//	void processRspQryInvestorPosition(Task *task);
 
 	void processRspQryTradingAccount(Task *task);
 
@@ -1022,9 +1022,9 @@ public:
 
 	void processRspQryInvestorPortfSetting(Task *task);
 
-	void processRspQryInvestorInfoCommRec(Task* task);
+//	void processRspQryInvestorInfoCommRec(Task* task);
 
-	void processRspQryCombLeg(Task* task);
+//	void processRspQryCombLeg(Task* task);
 
 	void processRspOffsetSetting(Task* task);
 
