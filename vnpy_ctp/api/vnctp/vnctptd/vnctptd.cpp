@@ -10619,7 +10619,7 @@ void TdApi::processRspCancelOffsetSetting(Task* task)
 	this->onRtnOffsetSetting(data);
 };*/
 
-void TdApi::processErrRtnOffsetSetting(Task* task)
+/*void TdApi::processErrRtnOffsetSetting(Task* task)
 {
 	gil_scoped_acquire acquire;
 	dict data;
@@ -10650,9 +10650,9 @@ void TdApi::processErrRtnOffsetSetting(Task* task)
 		delete task_error;
 	}
 	this->onErrRtnOffsetSetting(data, error);
-};
+};*/
 
-void TdApi::processErrRtnCancelOffsetSetting(Task* task)
+/*void TdApi::processErrRtnCancelOffsetSetting(Task* task)
 {
 	gil_scoped_acquire acquire;
 	dict data;
@@ -10695,7 +10695,7 @@ void TdApi::processErrRtnCancelOffsetSetting(Task* task)
 		delete task_error;
 	}
 	this->onErrRtnCancelOffsetSetting(data, error);
-};
+};*/
 
 void TdApi::processRspQryOffsetSetting(Task* task)
 {

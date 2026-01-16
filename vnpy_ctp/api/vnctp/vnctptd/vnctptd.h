@@ -1032,9 +1032,9 @@ public:
 
 //	void processRtnOffsetSetting(Task* task);
 
-	void processErrRtnOffsetSetting(Task* task);
+//	void processErrRtnOffsetSetting(Task* task);
 
-	void processErrRtnCancelOffsetSetting(Task* task);
+//	void processErrRtnCancelOffsetSetting(Task* task);
 
 	void processRspQryOffsetSetting(Task* task);
 
