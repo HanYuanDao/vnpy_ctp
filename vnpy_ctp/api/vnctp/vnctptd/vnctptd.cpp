@@ -10507,71 +10507,71 @@ void TdApi::processRspQryInvestorPortfSetting(Task *task)
 	this->onRspQryCombLeg(data, error, task->task_id, task->task_last);
 };*/
 
-void TdApi::processRspOffsetSetting(Task* task)
-{
-	gil_scoped_acquire acquire;
-	dict data;
-	if (task->task_data)
-	{
-		CThostFtdcInputOffsetSettingField* task_data = (CThostFtdcInputOffsetSettingField*)task->task_data;
-		data["BrokerID"] = toUtf(task_data->BrokerID);
-		data["InvestorID"] = toUtf(task_data->InvestorID);
-		data["InstrumentID"] = toUtf(task_data->InstrumentID);
-		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
-		data["ProductID"] = toUtf(task_data->ProductID);
-		data["OffsetType"] = task_data->OffsetType;
-		data["Volume"] = task_data->Volume;
-		data["IsOffset"] = task_data->IsOffset;
-		data["RequestID"] = task_data->RequestID;
-		data["UserID"] = toUtf(task_data->UserID);
-		data["ExchangeID"] = toUtf(task_data->ExchangeID);
-		data["IPAddress"] = toUtf(task_data->IPAddress);
-		data["MacAddress"] = toUtf(task_data->MacAddress);
-		delete task_data;
-	}
-	dict error;
-	if (task->task_error)
-	{
-		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
-		error["ErrorID"] = task_error->ErrorID;
-		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
-		delete task_error;
-	}
-	this->onRspOffsetSetting(data, error, task->task_id, task->task_last);
-};
+//void TdApi::processRspOffsetSetting(Task* task)
+//{
+//	gil_scoped_acquire acquire;
+//	dict data;
+//	if (task->task_data)
+//	{
+//		CThostFtdcInputOffsetSettingField* task_data = (CThostFtdcInputOffsetSettingField*)task->task_data;
+//		data["BrokerID"] = toUtf(task_data->BrokerID);
+//		data["InvestorID"] = toUtf(task_data->InvestorID);
+//		data["InstrumentID"] = toUtf(task_data->InstrumentID);
+//		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
+//		data["ProductID"] = toUtf(task_data->ProductID);
+//		data["OffsetType"] = task_data->OffsetType;
+//		data["Volume"] = task_data->Volume;
+//		data["IsOffset"] = task_data->IsOffset;
+//		data["RequestID"] = task_data->RequestID;
+//		data["UserID"] = toUtf(task_data->UserID);
+//		data["ExchangeID"] = toUtf(task_data->ExchangeID);
+//		data["IPAddress"] = toUtf(task_data->IPAddress);
+//		data["MacAddress"] = toUtf(task_data->MacAddress);
+//		delete task_data;
+//	}
+//	dict error;
+//	if (task->task_error)
+//	{
+//		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
+//		error["ErrorID"] = task_error->ErrorID;
+//		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
+//		delete task_error;
+//	}
+//	this->onRspOffsetSetting(data, error, task->task_id, task->task_last);
+//};
 
-void TdApi::processRspCancelOffsetSetting(Task* task)
-{
-	gil_scoped_acquire acquire;
-	dict data;
-	if (task->task_data)
-	{
-		CThostFtdcInputOffsetSettingField* task_data = (CThostFtdcInputOffsetSettingField*)task->task_data;
-		data["BrokerID"] = toUtf(task_data->BrokerID);
-		data["InvestorID"] = toUtf(task_data->InvestorID);
-		data["InstrumentID"] = toUtf(task_data->InstrumentID);
-		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
-		data["ProductID"] = toUtf(task_data->ProductID);
-		data["OffsetType"] = task_data->OffsetType;
-		data["Volume"] = task_data->Volume;
-		data["IsOffset"] = task_data->IsOffset;
-		data["RequestID"] = task_data->RequestID;
-		data["UserID"] = toUtf(task_data->UserID);
-		data["ExchangeID"] = toUtf(task_data->ExchangeID);
-		data["IPAddress"] = toUtf(task_data->IPAddress);
-		data["MacAddress"] = toUtf(task_data->MacAddress);
-		delete task_data;
-	}
-	dict error;
-	if (task->task_error)
-	{
-		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
-		error["ErrorID"] = task_error->ErrorID;
-		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
-		delete task_error;
-	}
-	this->onRspCancelOffsetSetting(data, error, task->task_id, task->task_last);
-};
+//void TdApi::processRspCancelOffsetSetting(Task* task)
+//{
+//	gil_scoped_acquire acquire;
+//	dict data;
+//	if (task->task_data)
+//	{
+//		CThostFtdcInputOffsetSettingField* task_data = (CThostFtdcInputOffsetSettingField*)task->task_data;
+//		data["BrokerID"] = toUtf(task_data->BrokerID);
+//		data["InvestorID"] = toUtf(task_data->InvestorID);
+//		data["InstrumentID"] = toUtf(task_data->InstrumentID);
+//		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
+//		data["ProductID"] = toUtf(task_data->ProductID);
+//		data["OffsetType"] = task_data->OffsetType;
+//		data["Volume"] = task_data->Volume;
+//		data["IsOffset"] = task_data->IsOffset;
+//		data["RequestID"] = task_data->RequestID;
+//		data["UserID"] = toUtf(task_data->UserID);
+//		data["ExchangeID"] = toUtf(task_data->ExchangeID);
+//		data["IPAddress"] = toUtf(task_data->IPAddress);
+//		data["MacAddress"] = toUtf(task_data->MacAddress);
+//		delete task_data;
+//	}
+//	dict error;
+//	if (task->task_error)
+//	{
+//		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
+//		error["ErrorID"] = task_error->ErrorID;
+//		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
+//		delete task_error;
+//	}
+//	this->onRspCancelOffsetSetting(data, error, task->task_id, task->task_last);
+//};
 
 /*void TdApi::processRtnOffsetSetting(Task* task)
 {
@@ -10697,59 +10697,59 @@ void TdApi::processRspCancelOffsetSetting(Task* task)
 	this->onErrRtnCancelOffsetSetting(data, error);
 };*/
 
-void TdApi::processRspQryOffsetSetting(Task* task)
-{
-	gil_scoped_acquire acquire;
-	dict data;
-	if (task->task_data)
-	{
-		CThostFtdcOffsetSettingField* task_data = (CThostFtdcOffsetSettingField*)task->task_data;
-		data["BrokerID"] = toUtf(task_data->BrokerID);
-		data["InvestorID"] = toUtf(task_data->InvestorID);
-		data["InstrumentID"] = toUtf(task_data->InstrumentID);
-		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
-		data["ProductID"] = toUtf(task_data->ProductID);
-		data["OffsetType"] = task_data->OffsetType;
-		data["Volume"] = task_data->Volume;
-		data["IsOffset"] = task_data->IsOffset;
-		data["RequestID"] = task_data->RequestID;
-		data["UserID"] = toUtf(task_data->UserID);
-		data["ExchangeID"] = toUtf(task_data->ExchangeID);
-		data["IPAddress"] = toUtf(task_data->IPAddress);
-		data["MacAddress"] = toUtf(task_data->MacAddress);
-		data["ExchangeInstID"] = toUtf(task_data->ExchangeInstID);
-		data["ExchangeSerialNo"] = toUtf(task_data->ExchangeSerialNo);
-		data["ExchangeProductID"] = toUtf(task_data->ExchangeProductID);
-		data["ParticipantID"] = toUtf(task_data->ParticipantID);
-		data["ClientID"] = toUtf(task_data->ClientID);
-		data["TraderID"] = toUtf(task_data->TraderID);
-		data["InstallID"] = task_data->InstallID;
-		data["OrderSubmitStatus"] = task_data->OrderSubmitStatus;
-		data["TradingDay"] = toUtf(task_data->TradingDay);
-		data["SettlementID"] = task_data->SettlementID;
-		data["InsertDate"] = toUtf(task_data->InsertDate);
-		data["InsertTime"] = toUtf(task_data->InsertTime);
-		data["CancelTime"] = toUtf(task_data->CancelTime);
-		data["ExecResult"] = task_data->ExecResult;
-		data["SequenceNo"] = task_data->SequenceNo;
-		data["FrontID"] = task_data->FrontID;
-		data["SessionID"] = task_data->SessionID;
-		data["StatusMsg"] = toUtf(task_data->StatusMsg);
-		data["ActiveUserID"] = toUtf(task_data->ActiveUserID);
-		data["BrokerOffsetSettingSeq"] = task_data->BrokerOffsetSettingSeq;
-		data["ApplySrc"] = task_data->ApplySrc;
-		delete task_data;
-	}
-	dict error;
-	if (task->task_error)
-	{
-		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
-		error["ErrorID"] = task_error->ErrorID;
-		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
-		delete task_error;
-	}
-	this->onRspQryOffsetSetting(data, error, task->task_id, task->task_last);
-};
+//void TdApi::processRspQryOffsetSetting(Task* task)
+//{
+//	gil_scoped_acquire acquire;
+//	dict data;
+//	if (task->task_data)
+//	{
+//		CThostFtdcOffsetSettingField* task_data = (CThostFtdcOffsetSettingField*)task->task_data;
+//		data["BrokerID"] = toUtf(task_data->BrokerID);
+//		data["InvestorID"] = toUtf(task_data->InvestorID);
+//		data["InstrumentID"] = toUtf(task_data->InstrumentID);
+//		data["UnderlyingInstrID"] = toUtf(task_data->UnderlyingInstrID);
+//		data["ProductID"] = toUtf(task_data->ProductID);
+//		data["OffsetType"] = task_data->OffsetType;
+//		data["Volume"] = task_data->Volume;
+//		data["IsOffset"] = task_data->IsOffset;
+//		data["RequestID"] = task_data->RequestID;
+//		data["UserID"] = toUtf(task_data->UserID);
+//		data["ExchangeID"] = toUtf(task_data->ExchangeID);
+//		data["IPAddress"] = toUtf(task_data->IPAddress);
+//		data["MacAddress"] = toUtf(task_data->MacAddress);
+//		data["ExchangeInstID"] = toUtf(task_data->ExchangeInstID);
+//		data["ExchangeSerialNo"] = toUtf(task_data->ExchangeSerialNo);
+//		data["ExchangeProductID"] = toUtf(task_data->ExchangeProductID);
+//		data["ParticipantID"] = toUtf(task_data->ParticipantID);
+//		data["ClientID"] = toUtf(task_data->ClientID);
+//		data["TraderID"] = toUtf(task_data->TraderID);
+//		data["InstallID"] = task_data->InstallID;
+//		data["OrderSubmitStatus"] = task_data->OrderSubmitStatus;
+//		data["TradingDay"] = toUtf(task_data->TradingDay);
+//		data["SettlementID"] = task_data->SettlementID;
+//		data["InsertDate"] = toUtf(task_data->InsertDate);
+//		data["InsertTime"] = toUtf(task_data->InsertTime);
+//		data["CancelTime"] = toUtf(task_data->CancelTime);
+//		data["ExecResult"] = task_data->ExecResult;
+//		data["SequenceNo"] = task_data->SequenceNo;
+//		data["FrontID"] = task_data->FrontID;
+//		data["SessionID"] = task_data->SessionID;
+//		data["StatusMsg"] = toUtf(task_data->StatusMsg);
+//		data["ActiveUserID"] = toUtf(task_data->ActiveUserID);
+//		data["BrokerOffsetSettingSeq"] = task_data->BrokerOffsetSettingSeq;
+//		data["ApplySrc"] = task_data->ApplySrc;
+//		delete task_data;
+//	}
+//	dict error;
+//	if (task->task_error)
+//	{
+//		CThostFtdcRspInfoField* task_error = (CThostFtdcRspInfoField*)task->task_error;
+//		error["ErrorID"] = task_error->ErrorID;
+//		error["ErrorMsg"] = toUtf(task_error->ErrorMsg);
+//		delete task_error;
+//	}
+//	this->onRspQryOffsetSetting(data, error, task->task_id, task->task_last);
+//};
 
 ///-------------------------------------------------------------------------------------
 ///主动函数

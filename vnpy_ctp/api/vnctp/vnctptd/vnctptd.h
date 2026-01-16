@@ -1026,9 +1026,9 @@ public:
 
 //	void processRspQryCombLeg(Task* task);
 
-	void processRspOffsetSetting(Task* task);
+//	void processRspOffsetSetting(Task* task);
 
-	void processRspCancelOffsetSetting(Task* task);
+//	void processRspCancelOffsetSetting(Task* task);
 
 //	void processRtnOffsetSetting(Task* task);
 
@@ -1036,7 +1036,7 @@ public:
 
 //	void processErrRtnCancelOffsetSetting(Task* task);
 
-	void processRspQryOffsetSetting(Task* task);
+//	void processRspQryOffsetSetting(Task* task);
 
     //-------------------------------------------------------------------------------------
     //data：回调函数的数据字典
