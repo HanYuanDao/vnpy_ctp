@@ -318,11 +318,22 @@ class VtpMdApi():
             self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
             # c = s.connect(address, port)
             self.socket_client.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, True)
-            self.socket_client.ioctl(socket.SIO_KEEPALIVE_VALS,
-                                     (1,
-                                      5 * 1000,
-                                      3 * 1000)
-                                     )
+            # Windows: SIO_KEEPALIVE_VALS + ioctl（毫秒）
+            if hasattr(self.socket_client, "ioctl") and hasattr(socket, "SIO_KEEPALIVE_VALS"):
+                self.socket_client.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 5_000, 3_000))
+            else:
+                # Linux: TCP_KEEPIDLE / TCP_KEEPINTVL / TCP_KEEPCNT（秒）
+                if hasattr(socket, "TCP_KEEPIDLE"):
+                    self.socket_client.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 5)
+                if hasattr(socket, "TCP_KEEPINTVL"):
+                    self.socket_client.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 3)
+                if hasattr(socket, "TCP_KEEPCNT"):
+                    self.socket_client.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 5)
+
+                # macOS: TCP_KEEPALIVE（秒，很多版本不导出，常见值为 0x10）
+                if sys.platform == "darwin":
+                    TCP_KEEPALIVE = getattr(socket, "TCP_KEEPALIVE", 0x10)
+                    self.socket_client.setsockopt(socket.IPPROTO_TCP, TCP_KEEPALIVE, 3)
             self.socket_client.connect((self.address, self.port))
 
             for symbol in self.subscribed:
@@ -649,6 +660,9 @@ class VtpMdApi():
         self.gateway.on_tick(tick)
 
     def parse_defind(self, msg_body: bytes):
+        pass
+
+    def exit(self):
         pass
 
     parse_data = {
