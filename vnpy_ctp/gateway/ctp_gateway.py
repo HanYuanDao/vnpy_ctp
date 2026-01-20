@@ -610,6 +610,8 @@ class CtpTdApi(TdApi):
                 pricetick=data["PriceTick"],
                 min_volume=data["MinLimitOrderVolume"],
                 max_volume=data["MaxLimitOrderVolume"],
+                long_margin_ratio=data["LongMarginRatio"],
+                short_margin_ratio=data["ShortMarginRatio"],
                 gateway_name=self.gateway_name
             )
 
