@@ -501,7 +501,8 @@ class CtpTdApi(TdApi):
             price=data["LimitPrice"],
             volume=data["VolumeTotalOriginal"],
             status=Status.REJECTED,
-            gateway_name=self.gateway_name
+            gateway_name=self.gateway_name,
+            trade_memo=error
         )
         self.gateway.on_order(order)
 
